@@ -15,6 +15,7 @@ import DonutChart from '../components/charts/DonutChart';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
 import AIInsightsPreview from '../components/dashboard/AIInsightsPreview';
 import EmptyState from '../components/common/EmptyState';
+import ProgressBar from '../components/common/ProgressBar';
 import { CATEGORIES, CATEGORY_COLORS } from '../data/constants';
 import {
   calculateTotalExpenses,
