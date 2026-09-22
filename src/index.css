@@ -942,6 +942,50 @@ textarea {
   margin-bottom: 4px;
 }
 
+.report-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.report-stat {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.report-stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.report-stat-value {
+  display: block;
+  font-weight: 800;
+  font-size: 1.15rem;
+  margin-top: 4px;
+}
+
+.report-stat-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+.report-section-title {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 18px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .bar-chart {
   display: flex;
   align-items: flex-end;
