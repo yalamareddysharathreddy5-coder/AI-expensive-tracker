@@ -6,6 +6,7 @@ import {
   FiPieChart,
   FiCpu,
   FiBarChart2,
+  FiTrendingUp,
   FiSettings,
 } from 'react-icons/fi';
 
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
   { path: '/history', label: 'Expense History', icon: FiList },
   { path: '/budget', label: 'Budget', icon: FiPieChart },
   { path: '/insights', label: 'AI Insights', icon: FiCpu },
+  { path: '/analysis', label: 'Spending Analysis', icon: FiTrendingUp },
   { path: '/reports', label: 'Reports', icon: FiBarChart2 },
   { path: '/settings', label: 'Settings', icon: FiSettings },
 ];

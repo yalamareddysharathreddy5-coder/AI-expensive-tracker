@@ -15,6 +15,7 @@ function Layout() {
     '/history': 'Expense History',
     '/budget': 'Budget',
     '/insights': 'AI Insights',
+    '/analysis': 'Spending Analysis',
     '/reports': 'Reports',
     '/settings': 'Settings',
   };

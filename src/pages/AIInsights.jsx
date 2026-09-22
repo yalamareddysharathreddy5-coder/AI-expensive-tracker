@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   FiRotateCw,
   FiTrendingDown,
+  FiTrendingUp,
   FiCreditCard,
   FiList,
   FiPieChart,
@@ -40,13 +41,18 @@ function AIInsights() {
           <h1 className="page-title">AI Insights</h1>
           <p className="page-subtitle">Smart observations based on your spending activity</p>
         </div>
-        <button
-          className="btn btn-outline"
-          onClick={() => setRefreshKey((key) => key + 1)}
-          aria-label="Refresh insights"
-        >
-          <FiRotateCw /> Refresh Insights
-        </button>
+        <div className="page-actions">
+          <Link to="/analysis" className="btn btn-outline">
+            <FiTrendingUp /> View Spending Analysis
+          </Link>
+          <button
+            className="btn btn-outline"
+            onClick={() => setRefreshKey((key) => key + 1)}
+            aria-label="Refresh insights"
+          >
+            <FiRotateCw /> Refresh Insights
+          </button>
+        </div>
       </div>
 
       <div className="card timeframe-card">
