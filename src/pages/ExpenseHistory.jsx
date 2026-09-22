@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiSearch, FiTrash2, FiX, FiPlus } from 'react-icons/fi';
+import { FiSearch, FiTrash2, FiX, FiPlus, FiZap } from 'react-icons/fi';
 import { CATEGORIES, PAYMENT_METHODS } from '../data/constants';
 import { formatDate, formatCurrency } from '../utils/format';
 import CategoryChip from '../components/common/CategoryChip';
@@ -188,6 +188,11 @@ function ExpenseHistory() {
                   </td>
                   <td data-label="Category">
                     <CategoryChip category={e.category} />
+                    {e.categorySource === 'ai' && (
+                      <span className="ai-tag" title="AI suggested this category">
+                        <FiZap /> AI
+                      </span>
+                    )}
                   </td>
                   <td data-label="Payment Method" className="cell-sub">
                     {e.paymentMethod}
