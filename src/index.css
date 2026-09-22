@@ -552,6 +552,27 @@ textarea {
   min-width: 180px;
 }
 
+.filters-row .btn-clear {
+  flex: 0 0 auto;
+  min-width: 0;
+  align-self: center;
+}
+
+.history-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.history-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
 .table-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);

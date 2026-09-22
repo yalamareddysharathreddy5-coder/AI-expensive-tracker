@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { FiSearch, FiTrash2 } from 'react-icons/fi';
+import { FiSearch, FiTrash2, FiX } from 'react-icons/fi';
 import { CATEGORIES, PAYMENT_METHODS } from '../data/constants';
-import { formatDate, sortExpensesNewestFirst, formatCurrency } from '../utils/format';
+import { formatDate, formatCurrency } from '../utils/format';
 import CategoryChip from '../components/common/CategoryChip';
 import EmptyState from '../components/common/EmptyState';
 import useExpenseContext from '../context/ExpenseContext';
@@ -11,22 +11,32 @@ function ExpenseHistory() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [paymentFilter, setPaymentFilter] = useState('All');
+  const [sortBy, setSortBy] = useState('date-desc');
 
-  const filtered = useMemo(() => {
+  const filtersActive =
+    search.trim().length > 0 || categoryFilter !== 'All' || paymentFilter !== 'All';
+  const sortingChanged = sortBy !== 'date-desc';
+
+  const displayed = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return sortExpensesNewestFirst(
-      expenses.filter((e) => {
-        const matchesQuery =
-          query.length === 0 ||
-          e.description.toLowerCase().includes(query) ||
-          e.category.toLowerCase().includes(query) ||
-          e.paymentMethod.toLowerCase().includes(query);
-        const matchesCategory = categoryFilter === 'All' || e.category === categoryFilter;
-        const matchesPayment = paymentFilter === 'All' || e.paymentMethod === paymentFilter;
-        return matchesQuery && matchesCategory && matchesPayment;
-      })
-    );
-  }, [expenses, search, categoryFilter, paymentFilter]);
+    const filtered = expenses.filter((e) => {
+      const matchesQuery =
+        query.length === 0 ||
+        e.description.toLowerCase().includes(query) ||
+        e.category.toLowerCase().includes(query) ||
+        e.paymentMethod.toLowerCase().includes(query);
+      const matchesCategory = categoryFilter === 'All' || e.category === categoryFilter;
+      const matchesPayment = paymentFilter === 'All' || e.paymentMethod === paymentFilter;
+      return matchesQuery && matchesCategory && matchesPayment;
+    });
+
+    return [...filtered].sort((a, b) => {
+      if (sortBy === 'date-asc') return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+      if (sortBy === 'date-desc') return a.date > b.date ? -1 : a.date < b.date ? 1 : 0;
+      if (sortBy === 'amount-asc') return a.amount - b.amount;
+      return b.amount - a.amount;
+    });
+  }, [expenses, search, categoryFilter, paymentFilter, sortBy]);
 
   function handleDelete(id, description) {
     if (window.confirm(`Delete "${description}"?`)) {
@@ -34,14 +44,24 @@ function ExpenseHistory() {
     }
   }
 
-  const totalShown = filtered.reduce((sum, e) => sum + e.amount, 0);
+  function clearFilters() {
+    setSearch('');
+    setCategoryFilter('All');
+    setPaymentFilter('All');
+    setSortBy('date-desc');
+  }
+
+  const totalShown = displayed.reduce((sum, e) => sum + e.amount, 0);
+  const countLabel = filtersActive
+    ? `Showing ${displayed.length} of ${expenses.length} transactions`
+    : `${expenses.length} transactions`;
 
   return (
     <div>
       <div className="page-header">
         <div>
           <h1 className="page-title">Expense History</h1>
-          <p className="page-subtitle">{filtered.length} transaction(s) shown</p>
+          <p className="page-subtitle">Search, filter and sort your transactions</p>
         </div>
       </div>
 
@@ -88,13 +108,40 @@ function ExpenseHistory() {
             ))}
           </select>
         </div>
+
+        <div className="select-wrap">
+          <select
+            className="form-select"
+            aria-label="Sort transactions"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="date-desc">Newest first</option>
+            <option value="date-asc">Oldest first</option>
+            <option value="amount-desc">Highest amount</option>
+            <option value="amount-asc">Lowest amount</option>
+          </select>
+        </div>
+
+        {(filtersActive || sortingChanged) && (
+          <button className="btn btn-outline btn-sm btn-clear" onClick={clearFilters}>
+            <FiX /> Clear Filters
+          </button>
+        )}
       </div>
 
-      {filtered.length === 0 ? (
+      <div className="history-summary">
+        <span className="history-count">{countLabel}</span>
+        {displayed.length > 0 && (
+          <span className="hint">Total shown: {formatCurrency(totalShown, settings.currency)}</span>
+        )}
+      </div>
+
+      {displayed.length === 0 ? (
         <div className="card">
           <EmptyState
-            title="No expenses found"
-            message="Try a different search or category. Or start by adding your first expense."
+            title="No matching expenses found"
+            message="Try a different search or filter combination."
           />
         </div>
       ) : (
@@ -111,7 +158,7 @@ function ExpenseHistory() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((e) => (
+              {displayed.map((e) => (
                 <tr key={e.id}>
                   <td data-label="Date">{formatDate(e.date)}</td>
                   <td data-label="Description">
@@ -141,12 +188,6 @@ function ExpenseHistory() {
             </tbody>
           </table>
         </div>
-      )}
-
-      {filtered.length > 0 && (
-        <p className="hint" style={{ marginTop: 12 }}>
-          Total shown: {formatCurrency(totalShown, settings.currency)}
-        </p>
       )}
     </div>
   );
