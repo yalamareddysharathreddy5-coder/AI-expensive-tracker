@@ -1456,6 +1456,170 @@ textarea {
   font-size: 0.8rem;
 }
 
+.timeframe-card {
+  margin-bottom: 18px;
+}
+
+.timeframe-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.timeframe-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.timeframe-pill {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.84rem;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.timeframe-pill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.timeframe-pill.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.ai-insights-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+.ai-insight-card {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border-top-width: 3px;
+}
+
+.ai-insight-card.priority-warning {
+  border-top-color: var(--amber);
+}
+
+.ai-insight-card.priority-positive {
+  border-top-color: var(--green);
+}
+
+.ai-insight-card.priority-info {
+  border-top-color: var(--primary);
+}
+
+.ai-insight-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.ai-insight-icon.priority-warning {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.ai-insight-icon.priority-positive {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.ai-insight-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-insight-priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
+}
+
+.ai-insight-card.priority-warning .ai-insight-priority {
+  color: var(--amber);
+}
+
+.ai-insight-card.priority-positive .ai-insight-priority {
+  color: var(--green);
+}
+
+.ai-insight-card.priority-info .ai-insight-priority {
+  color: var(--primary);
+}
+
+.ai-insight-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.ai-insight-desc {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.ai-insight-metric {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.ai-insight-source {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+.ai-insight-source svg {
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .ai-insights-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (min-width: 900px) {
   .sidebar {
     transform: translateX(0);
