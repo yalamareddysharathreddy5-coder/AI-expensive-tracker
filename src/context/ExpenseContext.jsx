@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect } from 'react';
+import useExpenses from '../hooks/useExpenses';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { generateSampleExpenses } from '../data/sampleData';
 import { DEFAULT_BUDGET, DEFAULT_SETTINGS } from '../data/constants';
@@ -6,24 +7,14 @@ import { DEFAULT_BUDGET, DEFAULT_SETTINGS } from '../data/constants';
 const ExpenseContext = createContext(null);
 
 export function ExpenseProvider({ children }) {
-  const [expenses, setExpenses] = useLocalStorage(
-    'expense-tracker.expenses',
-    generateSampleExpenses
-  );
+  const { expenses, addExpense, deleteExpense, replaceExpenses } =
+    useExpenses(generateSampleExpenses);
   const [budget, setBudget] = useLocalStorage('expense-tracker.budget', DEFAULT_BUDGET);
   const [settings, setSettings] = useLocalStorage('expense-tracker.settings', DEFAULT_SETTINGS);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', settings.darkMode ? 'dark' : 'light');
   }, [settings.darkMode]);
-
-  function addExpense(expense) {
-    setExpenses((prev) => [expense, ...prev]);
-  }
-
-  function deleteExpense(id) {
-    setExpenses((prev) => prev.filter((e) => e.id !== id));
-  }
 
   function updateBudget(next) {
     setBudget((prev) => ({ ...prev, ...next }));
@@ -41,7 +32,7 @@ export function ExpenseProvider({ children }) {
   }
 
   function resetSampleData() {
-    setExpenses(generateSampleExpenses());
+    replaceExpenses(generateSampleExpenses());
   }
 
   return (

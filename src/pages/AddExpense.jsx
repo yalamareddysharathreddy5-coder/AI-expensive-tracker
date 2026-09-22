@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiPlus, FiCheckCircle } from 'react-icons/fi';
 import { CATEGORIES, PAYMENT_METHODS } from '../data/constants';
 import { todayISO } from '../utils/format';
+import { createExpense, validateExpense } from '../utils/expense';
 import useExpenseContext from '../context/ExpenseContext';
 
 function AddExpense() {
@@ -14,39 +15,16 @@ function AddExpense() {
   const [errors, setErrors] = useState({});
   const [successId, setSuccessId] = useState(null);
 
-  function validate() {
-    const nextErrors = {};
-    const parsedAmount = parseFloat(amount);
-
-    if (description.trim().length === 0) {
-      nextErrors.description = 'Please add a short description.';
-    }
-    if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-      nextErrors.amount = 'Please enter an amount greater than 0.';
-    }
-    if (!date) {
-      nextErrors.date = 'Please choose a date.';
-    }
-    return nextErrors;
-  }
-
   function handleSubmit(event) {
     event.preventDefault();
-    const nextErrors = validate();
+    const nextErrors = validateExpense({ amount, category, description, date, paymentMethod });
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
     }
 
-    const expense = {
-      id: `exp-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-      amount: parseFloat(amount),
-      category,
-      description: description.trim(),
-      date,
-      paymentMethod,
-    };
+    const expense = createExpense({ amount, category, description, date, paymentMethod });
 
     addExpense(expense);
     setAmount('');
