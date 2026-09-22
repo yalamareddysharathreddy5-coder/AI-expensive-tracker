@@ -18,6 +18,7 @@ function Dashboard() {
   const { expenses, budget, settings } = useExpenseContext();
 
   const monthlySpent = getTotalExpenses(expenses, currentMonthKey());
+  const transactionCount = expenses.length;
   const totalExpenses = getTotalExpenses(expenses);
   const balance = settings.income - totalExpenses;
   const remainingBudget = budget.monthly - monthlySpent;
@@ -60,7 +61,7 @@ function Dashboard() {
           tone="red"
           label="Total Expenses"
           value={formatCurrency(totalExpenses, settings.currency)}
-          hint={`${formatCurrency(monthlySpent, settings.currency)} this month`}
+          hint={`${transactionCount} transactions · ${formatCurrency(monthlySpent, settings.currency)} this month`}
         />
         <StatCard
           icon={<FiTarget />}
