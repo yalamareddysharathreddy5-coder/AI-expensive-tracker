@@ -26,21 +26,6 @@ export const CATEGORY_COLORS = {
   Other: '#64748b',
 };
 
-export const DEFAULT_BUDGET = {
-  monthly: 20000,
-  categories: {
-    Food: 5000,
-    Transportation: 3000,
-    Shopping: 4000,
-    Bills: 3000,
-    Entertainment: 2000,
-    Education: 2000,
-    Healthcare: 2000,
-    Travel: 2000,
-    Other: 1000,
-  },
-};
-
 export const DEFAULT_SETTINGS = {
   name: '',
   email: '',

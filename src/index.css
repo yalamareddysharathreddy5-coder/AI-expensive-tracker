@@ -912,6 +912,36 @@ textarea {
   font-size: 0.85rem;
 }
 
+.budget-usage {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.budget-item-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.budget-empty {
+  padding: 26px 18px;
+  text-align: center;
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+
+.budget-empty-title {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
 .bar-chart {
   display: flex;
   align-items: flex-end;
