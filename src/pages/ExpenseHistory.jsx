@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { FiSearch, FiTrash2 } from 'react-icons/fi';
-import { CATEGORIES } from '../data/constants';
+import { CATEGORIES, PAYMENT_METHODS } from '../data/constants';
 import { formatDate, sortExpensesNewestFirst, formatCurrency } from '../utils/format';
 import CategoryChip from '../components/common/CategoryChip';
 import EmptyState from '../components/common/EmptyState';
@@ -10,22 +10,23 @@ function ExpenseHistory() {
   const { expenses, deleteExpense, settings } = useExpenseContext();
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [paymentFilter, setPaymentFilter] = useState('All');
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return sortExpensesNewestFirst(
       expenses.filter((e) => {
-        const matchesCategory =
-          categoryFilter === 'All' || e.category === categoryFilter;
         const matchesQuery =
           query.length === 0 ||
           e.description.toLowerCase().includes(query) ||
           e.category.toLowerCase().includes(query) ||
           e.paymentMethod.toLowerCase().includes(query);
-        return matchesCategory && matchesQuery;
+        const matchesCategory = categoryFilter === 'All' || e.category === categoryFilter;
+        const matchesPayment = paymentFilter === 'All' || e.paymentMethod === paymentFilter;
+        return matchesQuery && matchesCategory && matchesPayment;
       })
     );
-  }, [expenses, search, categoryFilter]);
+  }, [expenses, search, categoryFilter, paymentFilter]);
 
   function handleDelete(id, description) {
     if (window.confirm(`Delete "${description}"?`)) {
@@ -59,6 +60,7 @@ function ExpenseHistory() {
         <div className="select-wrap">
           <select
             className="form-select"
+            aria-label="Filter by category"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
@@ -66,6 +68,22 @@ function ExpenseHistory() {
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="select-wrap">
+          <select
+            className="form-select"
+            aria-label="Filter by payment method"
+            value={paymentFilter}
+            onChange={(e) => setPaymentFilter(e.target.value)}
+          >
+            <option value="All">All Payment Methods</option>
+            {PAYMENT_METHODS.map((p) => (
+              <option key={p} value={p}>
+                {p}
               </option>
             ))}
           </select>
