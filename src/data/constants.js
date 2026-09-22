@@ -10,7 +10,7 @@ export const CATEGORIES = [
   'Other',
 ];
 
-export const PAYMENT_METHODS = ['Cash', 'UPI', 'Credit Card', 'Debit Card', 'Bank Transfer', 'Wallet'];
+export const PAYMENT_METHODS = ['Cash', 'UPI', 'Credit Card', 'Debit Card', 'Bank Transfer', 'Other'];
 
 export const CURRENCIES = ['₹', '$', '€', '£', '¥'];
 

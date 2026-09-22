@@ -1,3 +1,5 @@
+import { generateId } from '../utils/expense';
+
 function toISODate(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -11,18 +13,15 @@ function dateOffset(daysAgo) {
   return toISODate(d);
 }
 
-function randomId() {
-  return `exp-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-}
-
 function makeExpense(category, description, amount, paymentMethod, date) {
   return {
-    id: randomId(),
+    id: generateId(),
     category,
     description,
     amount: Number(amount),
     paymentMethod,
     date,
+    createdAt: new Date().toISOString(),
   };
 }
 
