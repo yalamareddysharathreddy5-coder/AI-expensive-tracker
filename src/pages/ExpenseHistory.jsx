@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { FiSearch, FiTrash2, FiX } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiSearch, FiTrash2, FiX, FiPlus } from 'react-icons/fi';
 import { CATEGORIES, PAYMENT_METHODS } from '../data/constants';
 import { formatDate, formatCurrency } from '../utils/format';
 import CategoryChip from '../components/common/CategoryChip';
@@ -12,6 +13,7 @@ function ExpenseHistory() {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [paymentFilter, setPaymentFilter] = useState('All');
   const [sortBy, setSortBy] = useState('date-desc');
+  const [pendingDelete, setPendingDelete] = useState(null);
 
   const filtersActive =
     search.trim().length > 0 || categoryFilter !== 'All' || paymentFilter !== 'All';
@@ -38,10 +40,13 @@ function ExpenseHistory() {
     });
   }, [expenses, search, categoryFilter, paymentFilter, sortBy]);
 
-  function handleDelete(id, description) {
-    if (window.confirm(`Delete "${description}"?`)) {
-      deleteExpense(id);
-    }
+  function confirmDelete() {
+    deleteExpense(pendingDelete.id);
+    setPendingDelete(null);
+  }
+
+  function cancelDelete() {
+    setPendingDelete(null);
   }
 
   function clearFilters() {
@@ -137,11 +142,28 @@ function ExpenseHistory() {
         )}
       </div>
 
-      {displayed.length === 0 ? (
+      {expenses.length === 0 ? (
+        <div className="card">
+          <EmptyState
+            title="Your expense history is empty"
+            message="Add your first expense to start tracking your spending."
+            action={
+              <Link to="/add" className="btn btn-primary btn-sm">
+                <FiPlus /> Add Expense
+              </Link>
+            }
+          />
+        </div>
+      ) : displayed.length === 0 ? (
         <div className="card">
           <EmptyState
             title="No matching expenses found"
             message="Try a different search or filter combination."
+            action={
+              <button className="btn btn-outline btn-sm" onClick={clearFilters}>
+                <FiX /> Clear Filters
+              </button>
+            }
           />
         </div>
       ) : (
@@ -178,7 +200,7 @@ function ExpenseHistory() {
                       className="delete-btn"
                       title="Delete expense"
                       aria-label="Delete expense"
-                      onClick={() => handleDelete(e.id, e.description)}
+                      onClick={() => setPendingDelete(e)}
                     >
                       <FiTrash2 />
                     </button>
@@ -187,6 +209,34 @@ function ExpenseHistory() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {pendingDelete && (
+        <div className="confirm-overlay" onClick={cancelDelete}>
+          <div
+            className="confirm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="confirm-title" id="confirm-title">
+              Delete this expense?
+            </div>
+            <p className="confirm-desc">
+              Are you sure you want to delete "{pendingDelete.description}"
+              ({formatCurrency(pendingDelete.amount, settings.currency)})? This cannot be undone.
+            </p>
+            <div className="confirm-actions">
+              <button className="btn btn-outline" onClick={cancelDelete}>
+                Cancel
+              </button>
+              <button className="btn btn-danger" onClick={confirmDelete}>
+                <FiTrash2 /> Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
