@@ -6,6 +6,7 @@ import {
   FiClock,
   FiDollarSign,
   FiAlertTriangle,
+  FiCreditCard,
 } from 'react-icons/fi';
 
 function InsightIcon({ icon }) {
@@ -19,6 +20,7 @@ function InsightIcon({ icon }) {
     case 'trend-down':
       return <FiTrendingDown />;
     case 'weekend':
+    case 'calendar':
       return <FiCalendar />;
     case 'flag':
       return <FiAward />;
@@ -26,6 +28,8 @@ function InsightIcon({ icon }) {
       return <FiClock />;
     case 'piggy':
       return <FiDollarSign />;
+    case 'credit-card':
+      return <FiCreditCard />;
     default:
       return <FiAlertTriangle />;
   }
