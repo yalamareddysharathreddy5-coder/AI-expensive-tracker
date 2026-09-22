@@ -13,7 +13,9 @@ import {
 import StatCard from '../components/common/StatCard';
 import ProgressBar from '../components/common/ProgressBar';
 import EmptyState from '../components/common/EmptyState';
-import { CATEGORIES, CATEGORY_COLORS, PAYMENT_METHODS } from '../data/constants';
+import BarChart from '../components/charts/BarChart';
+import DonutChart from '../components/charts/DonutChart';
+import { CATEGORIES, CATEGORY_COLORS, PAYMENT_METHODS, PAYMENT_COLORS } from '../data/constants';
 import {
   calculateTotalExpenses,
   calculateAverageExpense,
@@ -26,6 +28,9 @@ import { formatCurrency, currentMonthKey } from '../utils/format';
 import {
   DATE_RANGES,
   filterExpenses,
+  calculateMonthlyTrend,
+  calculateCategoryBreakdown,
+  calculatePaymentBreakdown,
   calculateHighestExpense,
   calculateLowestExpense,
   calculateMostSpentCategory,
@@ -56,11 +61,6 @@ function Reports() {
   );
 
   const rangeLabel = DATE_RANGES.find((r) => r.key === range).label;
-  const filtersActive =
-    range !== 'all' ||
-    categoryFilter !== 'all' ||
-    paymentFilter !== 'all' ||
-    (range === 'custom' && Boolean(fromDate || toDate));
 
   const totalExpenses = calculateTotalExpenses(filtered);
   const totalTransactions = filtered.length;
@@ -74,6 +74,21 @@ function Reports() {
   const lowest = calculateLowestExpense(filtered);
   const mostSpentCategory = calculateMostSpentCategory(filtered);
   const mostUsedPayment = calculateMostUsedPaymentMethod(filtered);
+
+  const monthlyTrend = calculateMonthlyTrend(filtered, 6);
+  const categoryBreakdown = calculateCategoryBreakdown(filtered);
+  const categoryDonutData = categoryBreakdown.map((c) => ({
+    label: c.category,
+    value: c.value,
+    color: c.color,
+  }));
+  const paymentBreakdown = calculatePaymentBreakdown(filtered);
+  const paymentDonutData = paymentBreakdown.map((p) => ({
+    label: p.method,
+    value: p.value,
+    color: PAYMENT_COLORS[p.method] || '#64748b',
+  }));
+  const donutSubLabel = range === 'all' ? 'total spending' : `in ${rangeLabel.toLowerCase()}`;
 
   const budgetOverview = getMonthlyBudgetStatus(budget.monthly, currentMonthSpent, settings.currency);
   const currentCategoryTotals = calculateCategoryTotals(expenses, currentMonthKey());
@@ -260,6 +275,37 @@ function Reports() {
               <div className="grid grid-2" style={{ marginBottom: 18 }}>
                 <div className="card">
                   <div className="card-header">
+                    <div className="card-title">Monthly Spending Trend</div>
+                  </div>
+                  <BarChart data={monthlyTrend} symbol={settings.currency} />
+                </div>
+
+                <div className="card">
+                  <div className="card-header">
+                    <div className="card-title">Category Breakdown</div>
+                  </div>
+                  <DonutChart
+                    data={categoryDonutData}
+                    symbol={settings.currency}
+                    centerSubLabel={donutSubLabel}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-2" style={{ marginBottom: 18 }}>
+                <div className="card">
+                  <div className="card-header">
+                    <div className="card-title">Payment Methods</div>
+                  </div>
+                  <DonutChart
+                    data={paymentDonutData}
+                    symbol={settings.currency}
+                    centerSubLabel={donutSubLabel}
+                  />
+                </div>
+
+                <div className="card">
+                  <div className="card-header">
                     <div className="card-title">Monthly Comparison</div>
                   </div>
                   <div className="budget-head">
@@ -291,46 +337,6 @@ function Reports() {
                       <FiAlertTriangle /> No previous month data to compare.
                     </div>
                   )}
-                </div>
-
-                <div className="card">
-                  <div className="card-header">
-                    <div className="card-title">Financial Statistics</div>
-                  </div>
-                  <div className="report-stats">
-                    <div className="report-stat">
-                      <span className="report-stat-label">Highest Expense</span>
-                      <span className="report-stat-value">
-                        {formatCurrency(highest.amount, settings.currency)}
-                      </span>
-                      <span className="report-stat-sub">
-                        {highest.category} · {highest.description}
-                      </span>
-                    </div>
-                    <div className="report-stat">
-                      <span className="report-stat-label">Lowest Expense</span>
-                      <span className="report-stat-value">
-                        {formatCurrency(lowest.amount, settings.currency)}
-                      </span>
-                      <span className="report-stat-sub">
-                        {lowest.category} · {lowest.description}
-                      </span>
-                    </div>
-                    <div className="report-stat">
-                      <span className="report-stat-label">Most Spent Category</span>
-                      <span className="report-stat-value">{mostSpentCategory.category}</span>
-                      <span className="report-stat-sub">
-                        {formatCurrency(mostSpentCategory.value, settings.currency)} in range
-                      </span>
-                    </div>
-                    <div className="report-stat">
-                      <span className="report-stat-label">Most Used Payment Method</span>
-                      <span className="report-stat-value">{mostUsedPayment.method}</span>
-                      <span className="report-stat-sub">
-                        {mostUsedPayment.count} transaction{mostUsedPayment.count === 1 ? '' : 's'}
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -430,6 +436,46 @@ function Reports() {
                     with your spending.
                   </p>
                 )}
+              </div>
+
+              <div className="card">
+                <div className="card-header">
+                  <div className="card-title">Financial Statistics</div>
+                </div>
+                <div className="report-stats">
+                  <div className="report-stat">
+                    <span className="report-stat-label">Highest Expense</span>
+                    <span className="report-stat-value">
+                      {formatCurrency(highest.amount, settings.currency)}
+                    </span>
+                    <span className="report-stat-sub">
+                      {highest.category} · {highest.description}
+                    </span>
+                  </div>
+                  <div className="report-stat">
+                    <span className="report-stat-label">Lowest Expense</span>
+                    <span className="report-stat-value">
+                      {formatCurrency(lowest.amount, settings.currency)}
+                    </span>
+                    <span className="report-stat-sub">
+                      {lowest.category} · {lowest.description}
+                    </span>
+                  </div>
+                  <div className="report-stat">
+                    <span className="report-stat-label">Most Spent Category</span>
+                    <span className="report-stat-value">{mostSpentCategory.category}</span>
+                    <span className="report-stat-sub">
+                      {formatCurrency(mostSpentCategory.value, settings.currency)} in range
+                    </span>
+                  </div>
+                  <div className="report-stat">
+                    <span className="report-stat-label">Most Used Payment Method</span>
+                    <span className="report-stat-value">{mostUsedPayment.method}</span>
+                    <span className="report-stat-sub">
+                      {mostUsedPayment.count} transaction{mostUsedPayment.count === 1 ? '' : 's'}
+                    </span>
+                  </div>
+                </div>
               </div>
             </>
           )}

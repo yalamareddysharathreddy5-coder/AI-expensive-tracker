@@ -3,7 +3,7 @@ import { formatCurrency, formatCompactCurrency } from '../../utils/format';
 const RADIUS = 70;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-function DonutChart({ data, symbol, emptyTitle = 'No spending yet' }) {
+function DonutChart({ data, symbol, emptyTitle = 'No spending yet', centerSubLabel = 'spent this month' }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
   if (total === 0) {
@@ -49,7 +49,7 @@ function DonutChart({ data, symbol, emptyTitle = 'No spending yet' }) {
           {formatCompactCurrency(total, symbol)}
         </text>
         <text x="100" y="116" textAnchor="middle" dominantBaseline="central" className="donut-center-sub">
-          spent this month
+          {centerSubLabel}
         </text>
       </svg>
 
