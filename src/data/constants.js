@@ -26,6 +26,15 @@ export const CATEGORY_COLORS = {
   Other: '#64748b',
 };
 
+export const PAYMENT_COLORS = {
+  Cash: '#10b981',
+  UPI: '#8b5cf6',
+  'Credit Card': '#f59e0b',
+  'Debit Card': '#3b82f6',
+  'Bank Transfer': '#06b6d4',
+  Other: '#64748b',
+};
+
 export const DEFAULT_SETTINGS = {
   name: '',
   email: '',
