@@ -1,15 +1,18 @@
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
-import { buildInsights } from '../../utils/insights';
-import InsightIcon from '../dashboard/InsightIcon';
+import { generateInsights } from '../../utils/aiInsights';
+import InsightIcon from './InsightIcon';
 import useExpenseContext from '../../context/ExpenseContext';
 
-function AIInsightsPreview({ limit }) {
+function AIInsightsPreview({ limit = 3 }) {
   const { expenses, budget, settings } = useExpenseContext();
-  const insights = buildInsights(expenses, budget, settings.currency, settings.income).slice(0, limit);
+  const insights = generateInsights(expenses, budget, {
+    currency: settings.currency,
+    timeframe: 'thisMonth',
+  }).slice(0, limit);
 
   if (insights.length === 0) {
-    return <p className="hint">Add more expenses to unlock insights.</p>;
+    return <p className="hint">Add a few expenses to unlock insights.</p>;
   }
 
   return (
@@ -28,7 +31,7 @@ function AIInsightsPreview({ limit }) {
 
       <div style={{ marginTop: 12 }}>
         <Link to="/insights" className="link-btn">
-          View all insights <FiArrowRight />
+          View All Insights <FiArrowRight />
         </Link>
       </div>
     </div>
