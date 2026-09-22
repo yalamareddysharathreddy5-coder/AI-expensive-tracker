@@ -1,7 +1,7 @@
 function ProgressBar({ value }) {
   let tone = 'green';
   if (value >= 100) tone = 'red';
-  else if (value >= 80) tone = 'amber';
+  else if (value >= 70) tone = 'amber';
 
   return (
     <div className="progress">

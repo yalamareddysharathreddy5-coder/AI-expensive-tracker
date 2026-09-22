@@ -5,6 +5,9 @@ import {
   FiCalendar,
   FiList,
   FiCreditCard,
+  FiPieChart,
+  FiCheckCircle,
+  FiAlertTriangle,
 } from 'react-icons/fi';
 import StatCard from '../components/common/StatCard';
 import BarChart from '../components/charts/BarChart';
@@ -22,10 +25,11 @@ import {
   calculatePercentageChange,
 } from '../utils/calculations';
 import { getLastMonthlySeries, formatCurrency, currentMonthKey } from '../utils/format';
+import { getMonthlyBudgetStatus } from '../utils/budget';
 import useExpenseContext from '../context/ExpenseContext';
 
 function Dashboard() {
-  const { expenses, settings } = useExpenseContext();
+  const { expenses, budget, settings } = useExpenseContext();
 
   const totalExpenses = calculateTotalExpenses(expenses);
   const averageExpense = calculateAverageExpense(expenses);
@@ -43,6 +47,7 @@ function Dashboard() {
     .map((c) => ({ label: c, value: categoryTotals[c], color: CATEGORY_COLORS[c] }))
     .sort((a, b) => b.value - a.value);
   const monthTotal = monthlySeries.reduce((sum, m) => sum + m.value, 0);
+  const budgetOverview = getMonthlyBudgetStatus(budget.monthly, currentMonthSpent, settings.currency);
 
   const now = new Date();
   const today = now.toLocaleDateString('en-US', {
@@ -129,6 +134,61 @@ function Dashboard() {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="card" style={{ marginBottom: 18 }}>
+            <div className="card-header">
+              <div className="card-title">
+                <FiPieChart /> Budget Overview
+              </div>
+              <Link to="/budget" className="link-btn">
+                Manage
+              </Link>
+            </div>
+
+            {budget.monthly ? (
+              <>
+                <div className="budget-head">
+                  <span>Total budget</span>
+                  <span className="budget-value">
+                    {formatCurrency(budget.monthly, settings.currency)}
+                  </span>
+                </div>
+                <div className="budget-head" style={{ marginTop: 6 }}>
+                  <span>Spent this month</span>
+                  <span className="amount-neg" style={{ fontWeight: 700 }}>
+                    {formatCurrency(currentMonthSpent, settings.currency)}
+                  </span>
+                </div>
+                <div className="budget-head" style={{ marginTop: 6 }}>
+                  <span>{budgetOverview.remaining < 0 ? 'Over budget' : 'Remaining'}</span>
+                  <span className={budgetOverview.remaining < 0 ? 'amount-neg' : 'amount-strong'}>
+                    {formatCurrency(Math.abs(budgetOverview.remaining), settings.currency)}
+                  </span>
+                </div>
+
+                <ProgressBar value={budgetOverview.usage} />
+
+                <div className="budget-usage">
+                  <span>{Math.round(budgetOverview.usage)}% of budget used</span>
+                </div>
+
+                {budgetOverview.key === 'ok' ? (
+                  <div className="budget-msg ok">
+                    <FiCheckCircle /> {budgetOverview.message}
+                  </div>
+                ) : (
+                  <div className={`budget-msg ${budgetOverview.key === 'over' ? 'over' : 'warn'}`}>
+                    <FiAlertTriangle /> {budgetOverview.message}
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="hint" style={{ margin: 0 }}>
+                No monthly budget set yet. <Link to="/budget">Set a budget</Link> to track your
+                monthly spending.
+              </p>
+            )}
           </div>
 
           <div className="grid grid-2" style={{ marginBottom: 18 }}>
