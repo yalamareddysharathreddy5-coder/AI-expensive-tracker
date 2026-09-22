@@ -310,6 +310,52 @@ textarea {
   margin-bottom: 22px;
 }
 
+.snapshot {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .snapshot {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.snapshot-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.snapshot-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.snapshot-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.snapshot-trend {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.snapshot-trend.good {
+  color: var(--green);
+}
+
+.snapshot-trend.bad {
+  color: var(--red);
+}
+
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--border);

@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
-import { sortExpensesNewestFirst, formatDate } from '../../utils/format';
+import { sortExpensesNewestFirst, formatDate, formatCurrency } from '../../utils/format';
 import { CATEGORY_COLORS } from '../../data/constants';
 import useExpenseContext from '../../context/ExpenseContext';
 
 function RecentTransactions({ limit }) {
-  const { expenses } = useExpenseContext();
+  const { expenses, settings } = useExpenseContext();
   const sorted = sortExpensesNewestFirst(expenses).slice(0, limit);
 
   return (
@@ -41,7 +41,7 @@ function RecentTransactions({ limit }) {
                   </td>
                   <td data-label="Date">{formatDate(e.date)}</td>
                   <td data-label="Amount" className="amount-neg">
-                    -{e.amount.toLocaleString('en-US')}
+                    -{formatCurrency(e.amount, settings.currency)}
                   </td>
                 </tr>
               ))}
