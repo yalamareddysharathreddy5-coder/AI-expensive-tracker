@@ -8,17 +8,20 @@ import {
 } from 'react-icons/fi';
 import StatCard from '../components/common/StatCard';
 import BarChart from '../components/charts/BarChart';
+import DonutChart from '../components/charts/DonutChart';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
 import AIInsightsPreview from '../components/dashboard/AIInsightsPreview';
 import EmptyState from '../components/common/EmptyState';
+import { CATEGORIES, CATEGORY_COLORS } from '../data/constants';
 import {
   calculateTotalExpenses,
   calculateAverageExpense,
   calculateCurrentMonthExpenses,
   calculatePreviousMonthExpenses,
+  calculateCategoryTotals,
   calculatePercentageChange,
 } from '../utils/calculations';
-import { getLastMonthlySeries, formatCurrency } from '../utils/format';
+import { getLastMonthlySeries, formatCurrency, currentMonthKey } from '../utils/format';
 import useExpenseContext from '../context/ExpenseContext';
 
 function Dashboard() {
@@ -34,6 +37,12 @@ function Dashboard() {
   const balance = settings.income - totalExpenses;
   const monthlySeries = getLastMonthlySeries(expenses, 6);
   const hasExpenses = transactionCount > 0;
+
+  const categoryTotals = calculateCategoryTotals(expenses, currentMonthKey());
+  const donutData = CATEGORIES.filter((c) => categoryTotals[c] > 0)
+    .map((c) => ({ label: c, value: categoryTotals[c], color: CATEGORY_COLORS[c] }))
+    .sort((a, b) => b.value - a.value);
+  const monthTotal = monthlySeries.reduce((sum, m) => sum + m.value, 0);
 
   const now = new Date();
   const today = now.toLocaleDateString('en-US', {
@@ -127,16 +136,38 @@ function Dashboard() {
               <div className="card-header">
                 <div className="card-title">Monthly Spending</div>
               </div>
-              <BarChart data={monthlySeries} symbol={settings.currency} />
+              {monthTotal === 0 ? (
+                <EmptyState
+                  title="No spending data yet"
+                  message="Add expenses to see your monthly trends."
+                />
+              ) : (
+                <BarChart data={monthlySeries} symbol={settings.currency} />
+              )}
             </div>
 
+            <div className="card">
+              <div className="card-header">
+                <div className="card-title">Spending by Category</div>
+              </div>
+              {donutData.length === 0 ? (
+                <EmptyState
+                  title="No category spending yet"
+                  message="Add an expense this month to see your category breakdown."
+                />
+              ) : (
+                <DonutChart data={donutData} symbol={settings.currency} />
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-2">
             <div className="card">
               <div className="card-header">
                 <div className="card-title">Recent Transactions</div>
               </div>
               <RecentTransactions limit={5} />
             </div>
-          </div>
 
           <div className="card">
             <div className="card-header">
@@ -146,6 +177,7 @@ function Dashboard() {
               </Link>
             </div>
             <AIInsightsPreview limit={3} />
+          </div>
           </div>
         </>
       ) : (
