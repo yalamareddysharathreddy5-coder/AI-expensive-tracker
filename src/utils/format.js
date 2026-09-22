@@ -9,7 +9,7 @@ export function currentMonthKey() {
 }
 
 export function isInMonth(dateStr, key) {
-  return dateStr.startsWith(key);
+  return typeof dateStr === 'string' && dateStr.startsWith(key);
 }
 
 export function isCurrentMonth(dateStr) {
@@ -59,7 +59,7 @@ export function sumBy(list, getAmount) {
 export function getTotalExpenses(expenses, monthKey) {
   return expenses
     .filter((e) => !monthKey || isInMonth(e.date, monthKey))
-    .reduce((sum, e) => sum + e.amount, 0);
+    .reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
 }
 
 export function getCategoryTotals(expenses, categories, monthKey) {
@@ -68,7 +68,7 @@ export function getCategoryTotals(expenses, categories, monthKey) {
   categories.forEach((category) => {
     totals[category] = active
       .filter((e) => e.category === category)
-      .reduce((sum, e) => sum + e.amount, 0);
+      .reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
   });
   return totals;
 }
@@ -77,8 +77,9 @@ export function getLastMonthlySeries(expenses, count) {
   const now = new Date();
   const totals = {};
   expenses.forEach((e) => {
+    if (typeof e.date !== 'string' || !e.date) return;
     const key = e.date.slice(0, 7);
-    totals[key] = (totals[key] || 0) + e.amount;
+    totals[key] = (totals[key] || 0) + (Number(e.amount) || 0);
   });
 
   return Array.from({ length: count }, (_, i) => {

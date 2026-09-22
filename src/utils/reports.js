@@ -59,6 +59,7 @@ export function filterExpensesByRange(expenses, rangeKey, from = '', to = '') {
   const { start, end } = getRangeBounds(rangeKey, from, to);
   if (!start && !end) return expenses;
   return expenses.filter((e) => {
+    if (typeof e.date !== 'string') return false;
     if (start && e.date < start) return false;
     if (end && e.date > end) return false;
     return true;
@@ -92,7 +93,8 @@ export function calculateCategoryBreakdown(expenses, categories = CATEGORIES) {
 export function calculatePaymentBreakdown(expenses, methods = PAYMENT_METHODS) {
   const totals = {};
   expenses.forEach((e) => {
-    totals[e.paymentMethod] = (totals[e.paymentMethod] || 0) + e.amount;
+    const method = typeof e.paymentMethod === 'string' ? e.paymentMethod : 'Other';
+    totals[method] = (totals[method] || 0) + (Number(e.amount) || 0);
   });
   return methods
     .map((method) => ({ method, value: totals[method] || 0 }))
@@ -102,12 +104,18 @@ export function calculatePaymentBreakdown(expenses, methods = PAYMENT_METHODS) {
 
 export function calculateHighestExpense(expenses) {
   if (expenses.length === 0) return null;
-  return expenses.reduce((best, e) => (e.amount > best.amount ? e : best), expenses[0]);
+  return expenses.reduce(
+    (best, e) => ((Number(e.amount) || 0) > (Number(best.amount) || 0) ? e : best),
+    expenses[0]
+  );
 }
 
 export function calculateLowestExpense(expenses) {
   if (expenses.length === 0) return null;
-  return expenses.reduce((lowest, e) => (e.amount < lowest.amount ? e : lowest), expenses[0]);
+  return expenses.reduce(
+    (lowest, e) => ((Number(e.amount) || 0) < (Number(lowest.amount) || 0) ? e : lowest),
+    expenses[0]
+  );
 }
 
 export function calculateMostSpentCategory(expenses) {

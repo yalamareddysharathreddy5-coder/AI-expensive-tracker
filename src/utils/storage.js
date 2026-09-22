@@ -31,14 +31,19 @@ function removeFromStorage(key) {
   }
 }
 
+function sanitizeExpenses(list) {
+  return list.filter((e) => e && typeof e.date === 'string' && e.date.length > 0);
+}
+
 export function loadExpenses() {
   const stored = loadFromStorage(EXPENSES_STORAGE_KEY);
-  if (Array.isArray(stored)) return stored;
+  if (Array.isArray(stored)) return sanitizeExpenses(stored);
 
   const legacy = loadFromStorage(LEGACY_EXPENSES_STORAGE_KEY);
   if (Array.isArray(legacy) && legacy.length > 0) {
-    saveToStorage(EXPENSES_STORAGE_KEY, legacy);
-    return legacy;
+    const cleaned = sanitizeExpenses(legacy);
+    saveToStorage(EXPENSES_STORAGE_KEY, cleaned);
+    return cleaned;
   }
 
   return null;
