@@ -4,8 +4,8 @@ export function generateId() {
   return `exp-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-export function createExpense({ amount, category, description, date, paymentMethod }) {
-  return {
+export function createExpense({ amount, category, description, date, paymentMethod, categorySource }) {
+  const expense = {
     id: generateId(),
     amount: Number(amount),
     category,
@@ -14,6 +14,10 @@ export function createExpense({ amount, category, description, date, paymentMeth
     paymentMethod,
     createdAt: new Date().toISOString(),
   };
+  if (categorySource === 'ai') {
+    expense.categorySource = 'ai';
+  }
+  return expense;
 }
 
 export function validateExpense({ amount, category, description, date, paymentMethod }) {

@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FiPlus, FiCheckCircle } from 'react-icons/fi';
 import { CATEGORIES, PAYMENT_METHODS } from '../data/constants';
 import { todayISO } from '../utils/format';
 import { createExpense, validateExpense } from '../utils/expense';
+import { suggestCategory } from '../utils/expenseCategorizer';
+import CategorySuggestion from '../components/CategorySuggestion';
 import useExpenseContext from '../context/ExpenseContext';
 
 function AddExpense() {
   const { addExpense, settings } = useExpenseContext();
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState(CATEGORIES[0]);
+  const [categorySource, setCategorySource] = useState(null);
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(todayISO());
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
   const [errors, setErrors] = useState({});
   const [successId, setSuccessId] = useState(null);
+
+  const suggestion = useMemo(
+    () => (description.trim().length > 0 ? suggestCategory(description) : null),
+    [description]
+  );
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -24,15 +32,29 @@ function AddExpense() {
       return;
     }
 
-    const expense = createExpense({ amount, category, description, date, paymentMethod });
+    const expense = createExpense({
+      amount,
+      category,
+      description,
+      date,
+      paymentMethod,
+      categorySource,
+    });
 
     addExpense(expense);
     setAmount('');
     setDescription('');
     setDate(todayISO());
+    setCategorySource(null);
     setSuccessId(expense.id);
 
     window.setTimeout(() => setSuccessId(null), 4000);
+  }
+
+  function handleSuggestion() {
+    if (!suggestion) return;
+    setCategory(suggestion.category);
+    setCategorySource('ai');
   }
 
   return (
@@ -79,7 +101,10 @@ function AddExpense() {
                   id="category"
                   className="form-select"
                   value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => {
+                    setCategory(e.target.value);
+                    setCategorySource(null);
+                  }}
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c} value={c}>
@@ -87,6 +112,11 @@ function AddExpense() {
                     </option>
                   ))}
                 </select>
+                <CategorySuggestion
+                  suggestion={suggestion}
+                  selectedCategory={category}
+                  onAccept={handleSuggestion}
+                />
               </div>
             </div>
 
