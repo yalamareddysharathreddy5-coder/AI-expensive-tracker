@@ -22,8 +22,10 @@ export function previousMonthKey() {
 }
 
 export function formatCurrency(amount, symbol) {
-  const value = Number(amount) || 0;
-  return `${symbol}${value.toLocaleString('en-US')}`;
+  const parsed = Number(amount);
+  const value = Number.isFinite(parsed) ? parsed : 0;
+  const prefix = typeof symbol === 'string' ? symbol : '';
+  return `${prefix}${value.toLocaleString('en-US')}`;
 }
 
 export function formatCompactCurrency(amount, symbol) {
@@ -35,7 +37,14 @@ export function formatCompactCurrency(amount, symbol) {
 }
 
 export function formatDate(dateStr) {
-  const [y, m, d] = dateStr.split('-').map(Number);
+  if (typeof dateStr !== 'string') return 'Unknown date';
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return 'Unknown date';
+
+  const [y, m, d] = parts.map(Number);
+  if (!Number.isFinite(y) || !Number.isFinite(m) || !Number.isFinite(d)) return 'Unknown date';
+  if (m < 1 || m > 12 || d < 1 || d > 31) return 'Unknown date';
+
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   return `${months[m - 1]} ${d}, ${y}`;
 }

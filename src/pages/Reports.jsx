@@ -39,6 +39,14 @@ import {
 import { getMonthlyBudgetStatus, calculateCategoryBudgetUsage } from '../utils/budget';
 import useExpenseContext from '../context/ExpenseContext';
 
+function expenseDetail(expense) {
+  if (!expense) return 'No expenses in range';
+  const parts = [expense.category, expense.description].filter(
+    (part) => typeof part === 'string' && part.trim()
+  );
+  return parts.length > 0 ? parts.join(' - ') : 'Unlabelled expense';
+}
+
 function Reports() {
   const { expenses, budget, settings } = useExpenseContext();
 
@@ -446,33 +454,37 @@ function Reports() {
                   <div className="report-stat">
                     <span className="report-stat-label">Highest Expense</span>
                     <span className="report-stat-value">
-                      {formatCurrency(highest.amount, settings.currency)}
+                      {highest ? formatCurrency(highest.amount, settings.currency) : 'Not available'}
                     </span>
-                    <span className="report-stat-sub">
-                      {highest.category} · {highest.description}
-                    </span>
+                    <span className="report-stat-sub">{expenseDetail(highest)}</span>
                   </div>
                   <div className="report-stat">
                     <span className="report-stat-label">Lowest Expense</span>
                     <span className="report-stat-value">
-                      {formatCurrency(lowest.amount, settings.currency)}
+                      {lowest ? formatCurrency(lowest.amount, settings.currency) : 'Not available'}
                     </span>
-                    <span className="report-stat-sub">
-                      {lowest.category} · {lowest.description}
-                    </span>
+                    <span className="report-stat-sub">{expenseDetail(lowest)}</span>
                   </div>
                   <div className="report-stat">
                     <span className="report-stat-label">Most Spent Category</span>
-                    <span className="report-stat-value">{mostSpentCategory.category}</span>
+                    <span className="report-stat-value">
+                      {mostSpentCategory ? mostSpentCategory.category : 'Not available'}
+                    </span>
                     <span className="report-stat-sub">
-                      {formatCurrency(mostSpentCategory.value, settings.currency)} in range
+                      {mostSpentCategory
+                        ? `${formatCurrency(mostSpentCategory.value, settings.currency)} in range`
+                        : 'No category spending in range'}
                     </span>
                   </div>
                   <div className="report-stat">
                     <span className="report-stat-label">Most Used Payment Method</span>
-                    <span className="report-stat-value">{mostUsedPayment.method}</span>
+                    <span className="report-stat-value">
+                      {mostUsedPayment ? mostUsedPayment.method : 'Not available'}
+                    </span>
                     <span className="report-stat-sub">
-                      {mostUsedPayment.count} transaction{mostUsedPayment.count === 1 ? '' : 's'}
+                      {mostUsedPayment
+                        ? `${mostUsedPayment.count} transaction${mostUsedPayment.count === 1 ? '' : 's'}`
+                        : 'No payment methods in range'}
                     </span>
                   </div>
                 </div>

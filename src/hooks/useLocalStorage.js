@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react';
 
-export default function useLocalStorage(key, initialValue) {
+export default function useLocalStorage(key, initialValue, normalize) {
   const [value, setValue] = useState(() => {
+    let stored;
     try {
-      const stored = localStorage.getItem(key);
-      if (stored !== null) {
-        return JSON.parse(stored);
-      }
+      const raw = localStorage.getItem(key);
+      if (raw !== null) stored = JSON.parse(raw);
     } catch (error) {
       console.warn('Could not read from localStorage', error);
     }
-    return typeof initialValue === 'function' ? initialValue() : initialValue;
+
+    const base =
+      stored !== undefined
+        ? stored
+        : typeof initialValue === 'function'
+          ? initialValue()
+          : initialValue;
+
+    // Normalizing on read means partially written or hand-edited values are
+    // completed against the defaults instead of surfacing as missing fields.
+    return typeof normalize === 'function' ? normalize(base) : base;
   });
 
   useEffect(() => {

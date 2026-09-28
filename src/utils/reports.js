@@ -124,13 +124,14 @@ export function calculateMostSpentCategory(expenses) {
 }
 
 export function calculateMostUsedPaymentMethod(expenses) {
-  if (expenses.length === 0) return null;
   const counts = {};
   expenses.forEach((e) => {
+    // Records without a payment method would otherwise be tallied under an
+    // "undefined" bucket and reported as if it were a real method.
+    if (typeof e.paymentMethod !== 'string' || !e.paymentMethod.trim()) return;
     counts[e.paymentMethod] = (counts[e.paymentMethod] || 0) + 1;
   });
-  return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 1)
-    .map(([method, count]) => ({ method, count }))[0];
+  const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  if (ranked.length === 0) return null;
+  return { method: ranked[0][0], count: ranked[0][1] };
 }
