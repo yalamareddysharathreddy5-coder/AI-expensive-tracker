@@ -9,16 +9,20 @@
     "preview": "vite preview",
     "test": "node scripts/run-prediction-tests.mjs",
     "test:render": "node scripts/run-bundled.mjs verify-app-render.mjs",
-    "verify": "npm run test && npm run test:render && npm run build"
+    "test:receipt": "node scripts/run-bundled.mjs verify-receipt-parsing.mjs",
+    "verify": "npm run test && npm run test:render && npm run test:receipt && npm run build"
   },
   "dependencies": {
+    "pdfjs-dist": "^6.3.289",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.0.1",
-    "react-router-dom": "^7.1.0"
+    "react-router-dom": "^7.1.0",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.0",
+    "jsdom": "^30.1.1",
     "vite": "^7.0.0"
   }
 }

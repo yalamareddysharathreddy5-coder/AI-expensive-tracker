@@ -27,7 +27,24 @@ try {
     loader: { '.js': 'jsx' },
     outfile,
     logLevel: 'error',
-    external: ['react', 'react-dom', 'react-dom/server', 'react-router-dom', 'react-icons/fi'],
+    // The OCR and PDF engines need a browser, WebAssembly and a rendering
+    // canvas. Substituting them keeps the tests honest about everything that
+    // *is* Node-runnable - the provider plumbing, field parsers, categoriser,
+    // review form, expense service and storage - while leaving the two engines
+    // themselves to be verified in the browser.
+    alias: {
+      'tesseract.js': resolve(here, 'stubs', 'tesseract-stub.mjs'),
+      'pdfjs-dist': resolve(here, 'stubs', 'pdfjs-stub.mjs'),
+    },
+    external: [
+      'react',
+      'react-dom',
+      'react-dom/server',
+      'react-dom/client',
+      'react-router-dom',
+      'react-icons/fi',
+      'jsdom',
+    ],
   });
   await import(pathToFileURL(outfile).href);
 } finally {
