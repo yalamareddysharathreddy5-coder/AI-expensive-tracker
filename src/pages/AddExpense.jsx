@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { FiPlus, FiCheckCircle } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiPlus, FiCheckCircle, FiCamera } from 'react-icons/fi';
 import { CATEGORIES, PAYMENT_METHODS } from '../data/constants';
 import { todayISO } from '../utils/format';
 import { createExpense, validateExpense } from '../utils/expense';
@@ -174,6 +175,9 @@ function AddExpense() {
               <button type="submit" className="btn btn-primary">
                 <FiPlus /> Add Expense
               </button>
+              <Link className="btn btn-outline" to="/scan">
+                <FiCamera /> Scan Receipt Instead
+              </Link>
               <span className="hint" style={{ alignSelf: 'center' }}>
                 Data is stored locally in your browser.
               </span>

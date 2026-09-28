@@ -8,12 +8,14 @@ import {
   FiBarChart2,
   FiTrendingUp,
   FiActivity,
+  FiCamera,
   FiSettings,
 } from 'react-icons/fi';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Dashboard', icon: FiHome },
   { path: '/add', label: 'Add Expense', icon: FiPlusCircle },
+  { path: '/scan', label: 'Receipt Scanner', icon: FiCamera },
   { path: '/history', label: 'Expense History', icon: FiList },
   { path: '/budget', label: 'Budget', icon: FiPieChart },
   { path: '/insights', label: 'AI Insights', icon: FiCpu },

@@ -12,6 +12,7 @@ function Layout() {
   const linkLabel = {
     '/': 'Dashboard',
     '/add': 'Add Expense',
+    '/scan': 'Receipt Scanner',
     '/history': 'Expense History',
     '/budget': 'Budget',
     '/insights': 'AI Insights',
