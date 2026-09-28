@@ -13,6 +13,7 @@ import SpendingAnalysis from '../src/pages/SpendingAnalysis.jsx';
 import ExpensePrediction from '../src/pages/ExpensePrediction.jsx';
 import Reports from '../src/pages/Reports.jsx';
 import Settings from '../src/pages/Settings.jsx';
+import ReceiptScanner from '../src/pages/ReceiptScanner.jsx';
 import App from '../src/App.jsx';
 
 let passed = 0;
@@ -115,6 +116,7 @@ const PAGES = [
   ['ExpensePrediction', ExpensePrediction],
   ['Reports', Reports],
   ['Settings', Settings],
+  ['ReceiptScanner', ReceiptScanner],
 ];
 
 function assertNoBadNumbers(html, label) {
@@ -206,7 +208,7 @@ test('every page renders with malformed settings in localStorage', () => {
 test('the full App router renders every route', () => {
   seed(sample);
   store.set('ai_monthly_budget', '25000');
-  const routes = ['/', '/add', '/history', '/budget', '/insights', '/analysis', '/prediction', '/reports', '/settings', '/nonsense'];
+  const routes = ['/', '/add', '/scan', '/history', '/budget', '/insights', '/analysis', '/prediction', '/reports', '/settings', '/nonsense'];
 
   routes.forEach((route) => {
     // App owns its own ExpenseProvider and BrowserRouter, so the route is
@@ -221,6 +223,34 @@ test('the full App router renders every route', () => {
     check(html.length > 200, `App at ${route} rendered`);
     assertNoBadNumbers(html, `App at ${route}`);
   });
+});
+
+// ---------------------------------------------------------------------------
+// Receipt scanner
+// ---------------------------------------------------------------------------
+test('scanner page shows the uploader, its limits and the local privacy note', () => {
+  seed(sample);
+  const html = renderRoute(h(ReceiptScanner));
+
+  check(html.includes('Receipt Scanner'), 'page title present');
+  check(html.includes('Scan Receipt'), 'scanner card heading present');
+  check(html.includes('Upload a receipt image or PDF'), 'dropzone instruction present');
+  check(html.includes('Choose File'), 'a keyboard reachable file control is offered');
+  check(html.includes('JPG, JPEG, PNG, WEBP, PDF'), 'accepted formats are stated');
+  check(html.includes('10 MB'), 'the size limit is stated');
+  check(html.includes('Read on this device'), 'local processing is stated');
+  check(html.includes('No receipt is uploaded to a server'), 'no upload claim present');
+  check(html.includes('/add'), 'offers manual entry instead');
+  check(!html.includes('Review Scanned Expense'), 'no review form before a file is chosen');
+  check(!html.includes('Expense added successfully'), 'no success state before a file is chosen');
+  assertNoBadNumbers(html, 'scanner page');
+});
+
+test('scanner page saves nothing on its own', () => {
+  seed([]);
+  const before = store.get('ai_expenses');
+  renderRoute(h(ReceiptScanner));
+  check(store.get('ai_expenses') === before, 'rendering the scanner does not write expenses');
 });
 
 // ---------------------------------------------------------------------------

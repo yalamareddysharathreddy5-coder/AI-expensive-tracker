@@ -10,7 +10,8 @@
     "test": "node scripts/run-prediction-tests.mjs",
     "test:render": "node scripts/run-bundled.mjs verify-app-render.mjs",
     "test:receipt": "node scripts/run-bundled.mjs verify-receipt-parsing.mjs",
-    "verify": "npm run test && npm run test:render && npm run test:receipt && npm run build"
+    "test:receipt-flow": "node scripts/run-bundled.mjs verify-receipt-flow.mjs",
+    "verify": "npm run test && npm run test:render && npm run test:receipt && npm run test:receipt-flow && npm run build"
   },
   "dependencies": {
     "pdfjs-dist": "^6.3.289",
