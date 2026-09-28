@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node scripts/run-prediction-tests.mjs"
+    "test": "node scripts/run-prediction-tests.mjs",
+    "test:render": "node scripts/run-bundled.mjs verify-app-render.mjs",
+    "verify": "npm run test && npm run test:render && npm run build"
   },
   "dependencies": {
     "react": "^19.0.0",
