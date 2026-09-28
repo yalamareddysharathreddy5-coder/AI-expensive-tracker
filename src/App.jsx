@@ -7,6 +7,7 @@ import ExpenseHistory from './pages/ExpenseHistory';
 import Budget from './pages/Budget';
 import AIInsights from './pages/AIInsights';
 import SpendingAnalysis from './pages/SpendingAnalysis';
+import ExpensePrediction from './pages/ExpensePrediction';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="budget" element={<Budget />} />
             <Route path="insights" element={<AIInsights />} />
             <Route path="analysis" element={<SpendingAnalysis />} />
+            <Route path="prediction" element={<ExpensePrediction />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
             <Route path="*" element={<Dashboard />} />

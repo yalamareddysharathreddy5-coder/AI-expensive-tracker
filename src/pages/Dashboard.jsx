@@ -8,12 +8,14 @@ import {
   FiPieChart,
   FiCheckCircle,
   FiAlertTriangle,
+  FiActivity,
 } from 'react-icons/fi';
 import StatCard from '../components/common/StatCard';
 import BarChart from '../components/charts/BarChart';
 import DonutChart from '../components/charts/DonutChart';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
 import AIInsightsPreview from '../components/dashboard/AIInsightsPreview';
+import PredictionPreview from '../components/dashboard/PredictionPreview';
 import EmptyState from '../components/common/EmptyState';
 import ProgressBar from '../components/common/ProgressBar';
 import { CATEGORIES, CATEGORY_COLORS } from '../data/constants';
@@ -220,6 +222,18 @@ function Dashboard() {
                 <DonutChart data={donutData} symbol={settings.currency} />
               )}
             </div>
+          </div>
+
+          <div className="card" style={{ marginBottom: 18 }}>
+            <div className="card-header">
+              <div className="card-title">
+                <FiActivity /> AI Expense Prediction
+              </div>
+              <Link to="/prediction" className="link-btn">
+                View all
+              </Link>
+            </div>
+            <PredictionPreview />
           </div>
 
           <div className="grid grid-2">

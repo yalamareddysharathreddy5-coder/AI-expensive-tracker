@@ -13,6 +13,7 @@ import {
   FiCheckCircle,
   FiSun,
   FiTrendingUp,
+  FiActivity,
 } from 'react-icons/fi';
 import StatCard from '../components/common/StatCard';
 import ProgressBar from '../components/common/ProgressBar';
@@ -414,9 +415,14 @@ function SpendingAnalysis() {
           <h1 className="page-title">AI Spending Analysis</h1>
           <p className="page-subtitle">Explore patterns and trends calculated from your expense history.</p>
         </div>
-        <Link to="/insights" className="btn btn-outline">
-          <FiCpu /> View AI Insights
-        </Link>
+        <div className="page-actions">
+          <Link to="/insights" className="btn btn-outline">
+            <FiCpu /> View AI Insights
+          </Link>
+          <Link to="/prediction" className="btn btn-outline">
+            <FiActivity /> View Expense Prediction
+          </Link>
+        </div>
       </div>
 
       <div className="card timeframe-card">

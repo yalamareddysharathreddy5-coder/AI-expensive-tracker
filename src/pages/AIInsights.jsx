@@ -8,11 +8,13 @@ import {
   FiList,
   FiPieChart,
   FiPlus,
+  FiActivity,
 } from 'react-icons/fi';
 import StatCard from '../components/common/StatCard';
 import EmptyState from '../components/common/EmptyState';
 import AIInsightCard from '../components/AIInsightCard';
 import { INSIGHT_TIMEFRAMES, generateInsights, generateInsightSummary } from '../utils/aiInsights';
+import { buildProjectionInsight } from '../utils/expensePrediction';
 import { formatCurrency } from '../utils/format';
 import useExpenseContext from '../context/ExpenseContext';
 
@@ -32,6 +34,14 @@ function AIInsights() {
   const insights = useMemo(
     () => generateInsights(expenses, budget, { currency: settings.currency, timeframe }),
     [expenses, budget, settings.currency, timeframe, refreshKey]
+  );
+
+  const projectionInsight = useMemo(
+    () =>
+      timeframe === 'thisMonth'
+        ? buildProjectionInsight(expenses, budget, { currency: settings.currency })
+        : null,
+    [expenses, budget, settings.currency, timeframe]
   );
 
   return (
@@ -129,6 +139,17 @@ function AIInsights() {
               {insights.map((insight) => (
                 <AIInsightCard key={insight.id} insight={insight} />
               ))}
+              {projectionInsight && (
+                <AIInsightCard key={projectionInsight.id} insight={projectionInsight} />
+              )}
+            </div>
+          )}
+
+          {insights.length > 0 && (
+            <div className="page-actions" style={{ marginTop: 18 }}>
+              <Link to="/prediction" className="btn btn-outline">
+                <FiActivity /> View Expense Prediction
+              </Link>
             </div>
           )}
         </>

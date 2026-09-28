@@ -16,6 +16,7 @@ function Layout() {
     '/budget': 'Budget',
     '/insights': 'AI Insights',
     '/analysis': 'Spending Analysis',
+    '/prediction': 'Expense Prediction',
     '/reports': 'Reports',
     '/settings': 'Settings',
   };
